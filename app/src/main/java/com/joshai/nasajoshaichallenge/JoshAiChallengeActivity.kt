@@ -17,9 +17,7 @@ class JoshAiChallengeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NASAJoshAIChallengeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
-                }
+                NASARoverListScreen()
             }
         }
     }
