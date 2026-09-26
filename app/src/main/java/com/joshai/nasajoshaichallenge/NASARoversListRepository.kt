@@ -22,11 +22,11 @@ class NASARoversListRepository @Inject constructor(private val apiService: APISe
                 Single.zip(
                     apiService.getRover(roverId.id)
                         .subscribeOn(Schedulers.io()),
-                    apiService.getPhotos(roverId.id, 1)
+                    apiService.getPhoto(roverId.id, 1)
                         .subscribeOn(Schedulers.io())
                 ) { roverData, photoData ->
                     FullRoverData(
-                        roverData.data.attributes,
+                        roverData.data!!.attributes,
                         roverData.data.relationships,
                         photoData.data[0].attributes.images
                     )

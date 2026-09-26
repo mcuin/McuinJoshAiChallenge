@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingIndicator(paddingValues: PaddingValues) {
+fun LoadingIndicator(paddingValues: PaddingValues = PaddingValues()) {
     Box(modifier = Modifier.fillMaxSize().padding(paddingValues),
         contentAlignment = Alignment.Center) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -29,7 +29,7 @@ fun LoadingIndicator(paddingValues: PaddingValues) {
 }
 
 @Composable
-fun ErrorMessage(paddingValues: PaddingValues, errorMessage: String) {
+fun ErrorMessage(paddingValues: PaddingValues = PaddingValues(), errorMessage: String) {
     Box(modifier = Modifier.fillMaxSize().padding(paddingValues),
         contentAlignment = Alignment.Center) {
         Text(text = errorMessage)

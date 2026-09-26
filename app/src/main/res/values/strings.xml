@@ -10,4 +10,6 @@
     <string name="photos_title">Total Photos: %s</string>
     <string name="cameras_title">Cameras Available: %s</string>
     <string name="date">Date</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

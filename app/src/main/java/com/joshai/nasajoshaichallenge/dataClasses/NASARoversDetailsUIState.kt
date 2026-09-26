@@ -4,7 +4,8 @@ import androidx.compose.runtime.mutableStateListOf
 
 data class NASARoversDetailsUIState (
     var isLoading: Boolean = false,
-    var errorMessage: String? = null,
+    var roverErrorMessage: String? = null,
     var roverDetails: Rover? = null,
     var roverPhotos: List<PhotoLinks> = emptyList(),
+    var photoErrorMessage: String? = null
 )

@@ -1,17 +1,23 @@
 package com.joshai.nasajoshaichallenge
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,13 +32,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
-import com.joshai.nasajoshaichallenge.dataClasses.Attributes
-import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
+import coil3.compose.SubcomposeAsyncImage
 import com.joshai.nasajoshaichallenge.dataClasses.PhotoLinks
-import com.joshai.nasajoshaichallenge.dataClasses.Relationships
 import com.joshai.nasajoshaichallenge.dataClasses.Rover
 import java.sql.Date
+import java.text.SimpleDateFormat
+import androidx.compose.ui.platform.LocalLocale
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
 @Composable
 fun RoverDetailScreen(navController: NavController, roverId: String) {
@@ -51,13 +60,17 @@ fun RoverDetailScreenContent(roverId: String, onNavigationIconClick: () -> Unit,
             uiState.isLoading && uiState.roverDetails == null -> {
                 LoadingIndicator(innerPadding)
             }
-            uiState.errorMessage != null -> {
-                ErrorMessage(innerPadding, uiState.errorMessage!!)
+            uiState.roverErrorMessage != null -> {
+                ErrorMessage(innerPadding, uiState.roverErrorMessage!!)
             }
             uiState.roverDetails != null -> {
                 Column(modifier = Modifier.padding(innerPadding)) {
                     RoverDetailsHeader(uiState.roverDetails!!)
-                    RoverPhotosList(uiState.roverPhotos)
+                    if (uiState.photoErrorMessage != null) {
+                        ErrorMessage(errorMessage = uiState.photoErrorMessage!!)
+                    } else {
+                        RoverPhotosList(uiState.roverDetails!!, uiState.roverPhotos, viewModel::updateDateGetPhotos)
+                    }
                 }
             }
         }
@@ -80,26 +93,89 @@ fun RoverDetailsHeader(rover: Rover) {
 }
 
 @Composable
-fun RoverPhotosList(photos: List<PhotoLinks>) {
+fun RoverPhotosList(rover: Rover, photos: List<PhotoLinks>, dateChanged: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
 
+        val selectedFormatter = SimpleDateFormat("MM/dd/yyyy", LocalLocale.current.platformLocale).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
+        val apiFormatter = SimpleDateFormat("yyyy-MM-dd", LocalLocale.current.platformLocale).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
+        val epochFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", LocalLocale.current.platformLocale)
+        val minEpoch = LocalDate.parse(rover.attributes.landingDate, epochFormatter)
+            .atStartOfDay(ZoneOffset.UTC)
+            .toInstant()
+            .toEpochMilli()
+        val maxEpoch = LocalDate.parse(rover.attributes.maxDate, epochFormatter)
+            .atStartOfDay(ZoneOffset.UTC)
+            .toInstant()
+            .toEpochMilli()
         var showDatePickerModal by rememberSaveable { mutableStateOf(false) }
-        val datePickerState = rememberDatePickerState()
-        //val selectedDate = Date
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = maxEpoch,
+            selectableDates = object : SelectableDates {
 
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {},
-            label = { Text(text = stringResource(id = R.string.date)) },
-            trailingIcon = { painterResource(R.drawable.outline_calendar_today_24) }
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    return utcTimeMillis in minEpoch..maxEpoch
+                }
+
+                override fun isSelectableYear(year: Int): Boolean {
+                    return year in LocalDate.parse(rover.attributes.landingDate, epochFormatter).year..
+                            LocalDate.parse(rover.attributes.maxDate).year
+                }
+            }
         )
+        val selectedDateText = datePickerState.selectedDateMillis?.let {
+            selectedFormatter.format(Date(it))
+        } ?: ""
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                readOnly = true,
+                value = selectedDateText,
+                onValueChange = {},
+                label = { Text(text = stringResource(id = R.string.date)) },
+                trailingIcon = { painterResource(R.drawable.outline_calendar_today_24) }
+            )
+            Box(modifier = Modifier
+                .matchParentSize()
+                .clickable { showDatePickerModal = true })
+        }
+
+        if (showDatePickerModal) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePickerModal = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let {
+                            dateChanged(apiFormatter.format(Date(it)))
+                        }
+                        showDatePickerModal = false
+                    }) {
+                        Text(text = stringResource(id = R.string.ok))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePickerModal = false }) {
+                        Text(text = stringResource(id = R.string.cancel))
+                    }
+                }) {
+                    DatePicker(state = datePickerState)
+                }
+        }
     }
 
     LazyVerticalGrid(modifier = Modifier.fillMaxWidth(), columns = GridCells.Fixed(2)) {
         items(photos.size) { index ->
             Box(modifier = Modifier.padding(8.dp)) {
-                AsyncImage(model = photos[index].full, contentDescription = null)
+                SubcomposeAsyncImage(modifier = Modifier.fillMaxSize(),
+                    model = photos[index].full,
+                    contentDescription = null,
+                    loading = {
+                        LoadingIndicator()
+                    })
             }
         }
     }

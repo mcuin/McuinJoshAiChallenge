@@ -22,7 +22,7 @@ data class RoverId(
 
 @Serializable
 data class RoverData(
-    @SerialName("data") val data: Rover
+    @SerialName("data") val data: Rover?
 )
 
 @Serializable
@@ -36,7 +36,8 @@ data class Attributes(
     @SerialName("landing_date") val landingDate: String,
     @SerialName("launch_date") val launchDate: String,
     @SerialName("status") val status: String,
-    @SerialName("total_photos") val totalPhotos: Int)
+    @SerialName("total_photos") val totalPhotos: Int,
+    @SerialName("max_date") val maxDate: String)
 
 @Serializable
 data class Relationships(

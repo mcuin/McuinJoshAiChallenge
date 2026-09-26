@@ -31,6 +31,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import com.joshai.nasajoshaichallenge.dataClasses.NASARoversListUIState
 import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
 import com.joshai.nasajoshaichallenge.dataClasses.RoverDetailRoute
@@ -95,7 +96,11 @@ fun NASARoverListCard(rover: FullRoverData, onRoverClick: (roverId: String) -> U
         .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         onClick = { onRoverClick(rover.attributes.name) }) {
         Column(modifier = Modifier.padding(16.dp)) {
-            AsyncImage(model = rover.photoData?.full, contentDescription = null)
+            SubcomposeAsyncImage(model = rover.photoData?.full,
+                contentDescription = null,
+                loading = {
+                    LoadingIndicator()
+                })
             Text(text = rover.attributes.name)
             Text(text = stringResource(R.string.launch_title, rover.attributes.landingDate))
             Text(text = stringResource(R.string.landing_title, rover.attributes.launchDate))
