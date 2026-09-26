@@ -1,12 +1,12 @@
-package com.joshai.nasajoshaichallenge.dataclasses
+package com.joshai.nasajoshaichallenge.dataClasses
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PhotoData(
-    @SerialName("data") val data: List<PhotoItem>
-)
+    @SerialName("data") val data: List<PhotoItem>,
+    @SerialName("pagination") val pagination: Pagination)
 
 @Serializable
 data class PhotoItem(
@@ -22,3 +22,7 @@ data class PhotoAttributes(
 data class PhotoLinks(
     @SerialName("full") val full: String? = null
 )
+
+@Serializable
+data class Pagination(
+    @SerialName("total_pages") val totalPages: Int)

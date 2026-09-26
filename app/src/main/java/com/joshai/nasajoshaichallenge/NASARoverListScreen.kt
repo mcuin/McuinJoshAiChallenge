@@ -3,10 +3,12 @@ package com.joshai.nasajoshaichallenge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -27,38 +29,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.joshai.nasajoshaichallenge.dataclasses.NASARoversListUIState
-import com.joshai.nasajoshaichallenge.dataclasses.Rover
-import com.joshai.nasajoshaichallenge.dataclasses.RoverCard
+import coil3.compose.SubcomposeAsyncImage
+import com.joshai.nasajoshaichallenge.dataClasses.NASARoversListUIState
+import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
+import com.joshai.nasajoshaichallenge.dataClasses.RoverDetailRoute
 
 @Composable
-fun NASARoverListScreen(NASARoversListViewModel: NASARoversListViewModel = hiltViewModel()) {
-    Scaffold(topBar = { NASARoverTopBar(Modifier, true, {}) }) { innerPadding ->
+fun NASARoverListScreen(navController: NavController) {
+    NASARoverScreenContent(onRoverClick = { rover ->
+        navController.navigate(RoverDetailRoute(rover))
+    })
+}
+
+@Composable
+fun NASARoverScreenContent(nasaRoversListViewModel: NASARoversListViewModel = hiltViewModel(), onRoverClick: (roverId: String) -> Unit) {
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
+        topBar = { NASARoverTopBar(Modifier, false) {} }) { innerPadding ->
 
         LaunchedEffect(Unit) {
-            NASARoversListViewModel.getRovers()
+            nasaRoversListViewModel.getRovers()
         }
 
-        val roversUiState by NASARoversListViewModel.roversUIState.collectAsStateWithLifecycle()
+        val roversUiState by nasaRoversListViewModel.roversUIState.collectAsStateWithLifecycle()
 
         when {
             roversUiState.isLoading && roversUiState.rovers.isEmpty() -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding),
-                    contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
+                LoadingIndicator(innerPadding)
             }
             roversUiState.errorMessage != null -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding),
-                    contentAlignment = Alignment.Center) {
-                    Text(text = roversUiState.errorMessage!!)
-                }
+                ErrorMessage(innerPadding, roversUiState.errorMessage!!)
             }
             else -> {
                 Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
                     NASARoverListHeader()
-                    NASARoverList(roversUiState)
+                    NASARoverList(roversUiState, onRoverClick)
                 }
             }
         }
@@ -74,19 +81,26 @@ fun NASARoverListHeader() {
 }
 
 @Composable
-fun NASARoverList(roversUiState: NASARoversListUIState) {
+fun NASARoverList(roversUiState: NASARoversListUIState, onRoverClick: (roverId: String) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(roversUiState.rovers.size) { index ->
-            NASARoverListCard(roversUiState.rovers[index])
+            NASARoverListCard(roversUiState.rovers[index], onRoverClick = onRoverClick)
         }
     }
 }
 
 @Composable
-fun NASARoverListCard(rover: RoverCard) {
-    Card(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)) {
+fun NASARoverListCard(rover: FullRoverData, onRoverClick: (roverId: String) -> Unit) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+        onClick = { onRoverClick(rover.attributes.name) }) {
         Column(modifier = Modifier.padding(16.dp)) {
-            AsyncImage(model = rover.photoData?.full, contentDescription = null)
+            SubcomposeAsyncImage(model = rover.photoData?.full,
+                contentDescription = null,
+                loading = {
+                    LoadingIndicator()
+                })
             Text(text = rover.attributes.name)
             Text(text = stringResource(R.string.launch_title, rover.attributes.landingDate))
             Text(text = stringResource(R.string.landing_title, rover.attributes.launchDate))
@@ -96,40 +110,10 @@ fun NASARoverListCard(rover: RoverCard) {
     }
 }
 
-@Composable
-fun NASARoverTopBar(
-    modifier: Modifier,
-    canNavigateBack: Boolean,
-    onNavigationIconClick: () -> Unit
-) {
-    Box(modifier = modifier
-        .fillMaxWidth()
-        .height(56.dp)
-        .background(Color.White)) {
 
-        if (canNavigateBack) {
-            IconButton(
-                onClick = onNavigationIconClick,
-                modifier = Modifier.align(Alignment.CenterStart)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_arrow_back_24),
-                    contentDescription = stringResource(id = R.string.back_button)
-                )
-            }
-        }
-
-        Icon(
-            painter = painterResource(id = R.drawable.nasared),
-            contentDescription = stringResource(id = R.string.app_name),
-            tint = Color.Red,
-            modifier = Modifier.size(60.dp).align(Alignment.Center)
-        )
-    }
-}
 
 @Preview
 @Composable
 fun NASARoverListScreenPreview() {
-    NASARoverListScreen()
+    NASARoverScreenContent(onRoverClick = {})
 }

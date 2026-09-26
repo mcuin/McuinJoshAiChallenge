@@ -1,7 +1,7 @@
 package com.joshai.nasajoshaichallenge
 
 import androidx.lifecycle.ViewModel
-import com.joshai.nasajoshaichallenge.dataclasses.NASARoversListUIState
+import com.joshai.nasajoshaichallenge.dataClasses.NASARoversListUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import jakarta.inject.Inject
