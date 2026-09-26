@@ -10,10 +10,14 @@ kotlin = "2.4.20"
 composeBom = "2026.09.00"
 retrofit = "3.0.0"
 kotlinSerializationPlugin = "2.4.20"
+retrofitRxJava = "2.11.0"
 kotlinSerialization = "1.11.0"
-rxJava = "4.0.0-alpha-21"
+rxJava = "3.1.12"
 ksp = "2.3.12"
 hilt = "2.60.1"
+hilt-compose = "1.4.0"
+okhttp = "4.12.0"
+coil = "3.6.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,10 +35,16 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-kotlinx = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
+retrofit-rxjava = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", version.ref = "retrofitRxJava" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version = "okhttp" }
 kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
-rxjava = { group = "io.reactivex.rxjava4", name = "rxjava", version.ref = "rxJava" }
+rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxJava" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+coil = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

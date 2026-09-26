@@ -3,4 +3,10 @@
     <string name="nasa_rovers_list_header_title">NASA Mars Rovers</string>
     <string name="nasa_rovers_list_header_subtitle">Browse images from NASA Mars Rovers</string>
     <string name="back_button">Back</string>
+    <string name="error_message">Error loading rovers</string>
+    <string name="loading_message">Loading rovers</string>
+    <string name="launch_title">Launch: %s</string>
+    <string name="landing_title">Landing: %s</string>
+    <string name="photos_title">Total Photos: %s</string>
+    <string name="cameras_title">Cameras Available: %s</string>
 </resources>
