@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.network)
     implementation(libs.compose.navigation)
+    implementation(libs.coroutines.rx)
     testImplementation(libs.compose.navigation.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

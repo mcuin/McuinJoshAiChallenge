@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
+import com.joshai.nasajoshaichallenge.dataClasses.RoverDetailRoute
 import com.joshai.nasajoshaichallenge.dataClasses.RoverId
 import com.joshai.nasajoshaichallenge.dataClasses.RoversListRoute
 import com.joshai.nasajoshaichallenge.ui.theme.NASAJoshAIChallengeTheme
@@ -30,9 +31,10 @@ class JoshAiChallengeActivity : ComponentActivity() {
                     composable<RoversListRoute> {
                         NASARoverListScreen(navController)
                     }
-                    composable<RoverId> { backStackEntry ->
-                        val roverId: String = backStackEntry.toRoute()
-                        RoverDetailScreen(navController = navController, rover = roverId)
+                    composable<RoverDetailRoute> { backStackEntry ->
+                        val route: RoverDetailRoute = backStackEntry.toRoute()
+                        val roverId = route.roverId
+                        RoverDetailScreen(navController = navController, roverId = roverId)
                     }
                 }
             }

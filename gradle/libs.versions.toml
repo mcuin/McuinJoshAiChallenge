@@ -19,6 +19,7 @@ hilt-compose = "1.4.0"
 okhttp = "4.12.0"
 coil = "3.6.3"
 composeNavigation = "2.10.2"
+coroutines-rx = "1.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +49,7 @@ coil = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil"
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
 compose-navigation-test = { group = "androidx.navigation", name = "navigation-testing", version.ref = "composeNavigation" }
+coroutines-rx = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "coroutines-rx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -33,16 +33,17 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.joshai.nasajoshaichallenge.dataClasses.NASARoversListUIState
 import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
+import com.joshai.nasajoshaichallenge.dataClasses.RoverDetailRoute
 
 @Composable
 fun NASARoverListScreen(navController: NavController) {
     NASARoverScreenContent(onRoverClick = { rover ->
-        navController.navigate(rover)
+        navController.navigate(RoverDetailRoute(rover))
     })
 }
 
 @Composable
-fun NASARoverScreenContent(nasaRoversListViewModel: NASARoversListViewModel = hiltViewModel(), onRoverClick: (FullRoverData) -> Unit) {
+fun NASARoverScreenContent(nasaRoversListViewModel: NASARoversListViewModel = hiltViewModel(), onRoverClick: (roverId: String) -> Unit) {
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = { NASARoverTopBar(Modifier, false) {} }) { innerPadding ->
@@ -55,21 +56,15 @@ fun NASARoverScreenContent(nasaRoversListViewModel: NASARoversListViewModel = hi
 
         when {
             roversUiState.isLoading && roversUiState.rovers.isEmpty() -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding),
-                    contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
+                LoadingIndicator(innerPadding)
             }
             roversUiState.errorMessage != null -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding),
-                    contentAlignment = Alignment.Center) {
-                    Text(text = roversUiState.errorMessage!!)
-                }
+                ErrorMessage(innerPadding, roversUiState.errorMessage!!)
             }
             else -> {
                 Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
                     NASARoverListHeader()
-                    NASARoverList(roversUiState)
+                    NASARoverList(roversUiState, onRoverClick)
                 }
             }
         }
@@ -85,17 +80,20 @@ fun NASARoverListHeader() {
 }
 
 @Composable
-fun NASARoverList(roversUiState: NASARoversListUIState) {
+fun NASARoverList(roversUiState: NASARoversListUIState, onRoverClick: (roverId: String) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(roversUiState.rovers.size) { index ->
-            NASARoverListCard(roversUiState.rovers[index])
+            NASARoverListCard(roversUiState.rovers[index], onRoverClick = onRoverClick)
         }
     }
 }
 
 @Composable
-fun NASARoverListCard(rover: FullRoverData) {
-    Card(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)) {
+fun NASARoverListCard(rover: FullRoverData, onRoverClick: (roverId: String) -> Unit) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+        onClick = { onRoverClick(rover.attributes.name) }) {
         Column(modifier = Modifier.padding(16.dp)) {
             AsyncImage(model = rover.photoData?.full, contentDescription = null)
             Text(text = rover.attributes.name)
@@ -107,37 +105,7 @@ fun NASARoverListCard(rover: FullRoverData) {
     }
 }
 
-@Composable
-fun NASARoverTopBar(
-    modifier: Modifier,
-    canNavigateBack: Boolean,
-    onNavigationIconClick: () -> Unit
-) {
-    Box(modifier = modifier
-        .fillMaxWidth()
-        .height(56.dp)
-        .background(Color.White)) {
 
-        if (canNavigateBack) {
-            IconButton(
-                onClick = onNavigationIconClick,
-                modifier = Modifier.align(Alignment.CenterStart)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_arrow_back_24),
-                    contentDescription = stringResource(id = R.string.back_button)
-                )
-            }
-        }
-
-        Icon(
-            painter = painterResource(id = R.drawable.nasared),
-            contentDescription = stringResource(id = R.string.app_name),
-            tint = Color.Red,
-            modifier = Modifier.size(60.dp).align(Alignment.Center)
-        )
-    }
-}
 
 @Preview
 @Composable
