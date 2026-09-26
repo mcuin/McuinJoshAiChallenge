@@ -7,6 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
+import com.joshai.nasajoshaichallenge.dataClasses.RoverId
+import com.joshai.nasajoshaichallenge.dataClasses.RoversListRoute
 import com.joshai.nasajoshaichallenge.ui.theme.NASAJoshAIChallengeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +24,17 @@ class JoshAiChallengeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NASAJoshAIChallengeTheme {
-                NASARoverListScreen()
+                val navController = rememberNavController()
+
+                NavHost(navController = navController, startDestination = RoversListRoute) {
+                    composable<RoversListRoute> {
+                        NASARoverListScreen(navController)
+                    }
+                    composable<RoverId> { backStackEntry ->
+                        val roverId: String = backStackEntry.toRoute()
+                        RoverDetailScreen(navController = navController, rover = roverId)
+                    }
+                }
             }
         }
     }

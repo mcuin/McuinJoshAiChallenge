@@ -1,4 +1,4 @@
-package com.joshai.nasajoshaichallenge.dataclasses
+package com.joshai.nasajoshaichallenge.dataClasses
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

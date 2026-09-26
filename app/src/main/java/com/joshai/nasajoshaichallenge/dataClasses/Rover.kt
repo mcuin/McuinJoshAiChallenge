@@ -1,10 +1,10 @@
-package com.joshai.nasajoshaichallenge.dataclasses
+package com.joshai.nasajoshaichallenge.dataClasses
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
-data class RoverCard(
+@Serializable
+data class FullRoverData(
     var attributes: Attributes,
     var relationships: Relationships,
     var photoData: PhotoLinks?

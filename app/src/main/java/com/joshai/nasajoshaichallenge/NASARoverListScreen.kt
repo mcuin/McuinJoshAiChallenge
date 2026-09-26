@@ -3,10 +3,12 @@ package com.joshai.nasajoshaichallenge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -27,20 +29,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.joshai.nasajoshaichallenge.dataclasses.NASARoversListUIState
-import com.joshai.nasajoshaichallenge.dataclasses.Rover
-import com.joshai.nasajoshaichallenge.dataclasses.RoverCard
+import com.joshai.nasajoshaichallenge.dataClasses.NASARoversListUIState
+import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
 
 @Composable
-fun NASARoverListScreen(NASARoversListViewModel: NASARoversListViewModel = hiltViewModel()) {
-    Scaffold(topBar = { NASARoverTopBar(Modifier, true, {}) }) { innerPadding ->
+fun NASARoverListScreen(navController: NavController) {
+    NASARoverScreenContent(onRoverClick = { rover ->
+        navController.navigate(rover)
+    })
+}
+
+@Composable
+fun NASARoverScreenContent(nasaRoversListViewModel: NASARoversListViewModel = hiltViewModel(), onRoverClick: (FullRoverData) -> Unit) {
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
+        topBar = { NASARoverTopBar(Modifier, false) {} }) { innerPadding ->
 
         LaunchedEffect(Unit) {
-            NASARoversListViewModel.getRovers()
+            nasaRoversListViewModel.getRovers()
         }
 
-        val roversUiState by NASARoversListViewModel.roversUIState.collectAsStateWithLifecycle()
+        val roversUiState by nasaRoversListViewModel.roversUIState.collectAsStateWithLifecycle()
 
         when {
             roversUiState.isLoading && roversUiState.rovers.isEmpty() -> {
@@ -83,7 +94,7 @@ fun NASARoverList(roversUiState: NASARoversListUIState) {
 }
 
 @Composable
-fun NASARoverListCard(rover: RoverCard) {
+fun NASARoverListCard(rover: FullRoverData) {
     Card(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
             AsyncImage(model = rover.photoData?.full, contentDescription = null)
@@ -131,5 +142,5 @@ fun NASARoverTopBar(
 @Preview
 @Composable
 fun NASARoverListScreenPreview() {
-    NASARoverListScreen()
+    NASARoverScreenContent(onRoverClick = {})
 }

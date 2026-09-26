@@ -1,9 +1,8 @@
 package com.joshai.nasajoshaichallenge.networking
 
-import com.joshai.nasajoshaichallenge.dataclasses.PhotoData
-import com.joshai.nasajoshaichallenge.dataclasses.Rover
-import com.joshai.nasajoshaichallenge.dataclasses.RoverData
-import com.joshai.nasajoshaichallenge.dataclasses.RoverIds
+import com.joshai.nasajoshaichallenge.dataClasses.PhotoData
+import com.joshai.nasajoshaichallenge.dataClasses.RoverData
+import com.joshai.nasajoshaichallenge.dataClasses.RoverIds
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
