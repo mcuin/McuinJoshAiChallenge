@@ -1,0 +1,6 @@
+Retrofit - https://lysine.dev/retrofit/
+Kotlin Serialization - https://github.com/kotlin/kotlinx.serialization
+RxJava - https://github.com/reactivex/rxjava
+Hilt - https://dagger.dev/hilt/
+KSP - kotlinlang.org/docs/ksp-overview.html
+Coil - https://github.com/coil-kt/coil
