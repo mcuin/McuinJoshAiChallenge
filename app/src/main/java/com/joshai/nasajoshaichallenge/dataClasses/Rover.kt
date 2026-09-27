@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FullRoverData(
-    var attributes: Attributes,
-    var relationships: Relationships,
-    var photoData: PhotoLinks?
+    val attributes: Attributes,
+    val relationships: Relationships,
+    val photoData: PhotoLinks?
 )
 
 @Serializable

@@ -3,10 +3,10 @@ package com.joshai.nasajoshaichallenge
 import com.joshai.nasajoshaichallenge.dataClasses.FullRoverData
 import com.joshai.nasajoshaichallenge.dataClasses.RoverIds
 import com.joshai.nasajoshaichallenge.networking.APIService
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.internal.operators.observable.ObservableFromIterable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class NASARoversListRepository @Inject constructor(private val apiService: APIService) {
 
@@ -17,7 +17,7 @@ class NASARoversListRepository @Inject constructor(private val apiService: APISe
     fun fetchRovers(): Single<List<FullRoverData>> {
         return fetchRoverIds()
             .flatMapObservable { roverIds ->
-                ObservableFromIterable.fromIterable(roverIds.data)
+                Observable.fromIterable(roverIds.data)
             }.flatMapSingle { roverId ->
                 Single.zip(
                     apiService.getRover(roverId.id)
@@ -28,7 +28,7 @@ class NASARoversListRepository @Inject constructor(private val apiService: APISe
                     FullRoverData(
                         roverData.data!!.attributes,
                         roverData.data.relationships,
-                        photoData.data[0].attributes.images
+                        photoData.data.firstOrNull()?.attributes?.images
                     )
                 }
             }

@@ -1,11 +1,13 @@
 package com.joshai.nasajoshaichallenge.dataClasses
 
-import androidx.compose.runtime.mutableStateListOf
-
 data class NASARoversDetailsUIState (
-    var isLoading: Boolean = false,
-    var roverErrorMessage: String? = null,
-    var roverDetails: Rover? = null,
-    var roverPhotos: List<PhotoLinks> = emptyList(),
-    var photoErrorMessage: String? = null
+    val isLoading: Boolean = false,
+    val roverErrorMessage: Int? = null,
+    val roverDetails: Rover? = null,
+    val roverPhotos: List<PhotoLinks> = emptyList(),
+    val photoErrorMessage: Int? = null,
+    val startDate: String = "",
+    val selectedDateMillis: Long? = null,
+    val minEpoch: Long = 0L,
+    val maxEpoch: Long = 0L,
 )
