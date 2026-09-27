@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard_padding">16dp</dimen>
+    <dimen name="small_padding">8dp</dimen>
+    <dimen name="header_padding">24dp</dimen>
+    <dimen name="card_radius">16dp</dimen>
+    <dimen name="appbar_height">56dp</dimen>
+    <dimen name="appbar_elevation">4dp</dimen>
+    <dimen name="appbar_image_size">60dp</dimen>
+    <dimen name="rover_card_image_size">200dp</dimen>
+</resources>

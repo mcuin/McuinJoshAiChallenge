@@ -12,4 +12,7 @@
     <string name="date">Date</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="rover_not_found">Rover not found</string>
+    <string name="no_photos_found">No photos found</string>
+    <string name="view_images">VIEW IMAGES</string>
 </resources>

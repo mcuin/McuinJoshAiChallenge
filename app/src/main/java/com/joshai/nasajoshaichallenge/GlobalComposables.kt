@@ -1,24 +1,27 @@
 package com.joshai.nasajoshaichallenge
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun LoadingIndicator(paddingValues: PaddingValues = PaddingValues()) {
@@ -38,32 +41,38 @@ fun ErrorMessage(paddingValues: PaddingValues = PaddingValues(), errorMessage: S
 
 @Composable
 fun NASARoverTopBar(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     canNavigateBack: Boolean,
     onNavigationIconClick: () -> Unit
 ) {
-    Box(modifier = modifier
-        .fillMaxWidth()
-        .height(56.dp)
-        .background(Color.White)) {
+    Surface(modifier = modifier
+        .fillMaxWidth(),
+        color = Color.White,
+        shadowElevation = dimensionResource(id = R.dimen.appbar_elevation)) {
 
-        if (canNavigateBack) {
-            IconButton(
-                onClick = onNavigationIconClick,
-                modifier = Modifier.align(Alignment.CenterStart)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_arrow_back_24),
-                    contentDescription = stringResource(id = R.string.back_button)
-                )
+        Box(modifier = modifier
+            .padding(WindowInsets.statusBars.asPaddingValues())
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.appbar_height))) {
+
+            if (canNavigateBack) {
+                IconButton(
+                    onClick = onNavigationIconClick,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_arrow_back_24),
+                        contentDescription = stringResource(id = R.string.back_button)
+                    )
+                }
             }
-        }
 
-        Icon(
-            painter = painterResource(id = R.drawable.nasared),
-            contentDescription = stringResource(id = R.string.app_name),
-            tint = Color.Red,
-            modifier = Modifier.size(60.dp).align(Alignment.Center)
-        )
+            Icon(
+                painter = painterResource(id = R.drawable.nasared),
+                contentDescription = stringResource(id = R.string.app_name),
+                tint = Color.Red,
+                modifier = Modifier.size(dimensionResource(id = R.dimen.appbar_image_size)).align(Alignment.Center)
+            )
+        }
     }
 }
